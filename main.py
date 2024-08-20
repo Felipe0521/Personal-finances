@@ -44,7 +44,8 @@ def on_startup():
 async def read_root():
     return {
         
-            "Hello": "World",
+            "Hello": "Adso 2670586",
+            "autor": "felipe cardona"
            
             }
 

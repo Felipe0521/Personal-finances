@@ -2,11 +2,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from appv1.crud.users import create_user_sql, delete_user, get_all_users, get_all_users_paginated, get_user_by_email, get_user_by_id, get_user_by_role, update_user
 from appv1.schemas.user import PaginatedUsersResponse, UserCreate, UserResponse, UserUpdate
-
-from core.security import get_hashed_password
 from db.database import get_db
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+
 router = APIRouter()
 
 
