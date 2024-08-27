@@ -5,7 +5,7 @@ from appv1.routers import users
 from appv1.routers import roles
 from appv1.routers import categories
 from appv1.routers import login
-
+from fastapi.middleware.cors import CORSMiddleware
 from appv1.schemas.user import UserCreate
 from appv1.schemas.rol import RolCreate
 from appv1.schemas.category import CategoryCreate
@@ -16,11 +16,24 @@ from db.database import test_db_connection
 # otropass = '12345'
 
 
-app = FastAPI()
-app.include_router(users.router, tags=["users"])
-app.include_router(roles.router, tags=["roles"])
-app.include_router(categories.router, tags=["categories"])
+app = FastAPI() 
+
+
+#incluir router
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(roles.router, prefix="/roles", tags=["roles"])
+app.include_router(categories.router, prefix="/category", tags=["category"])
 app.include_router(login.router, prefix="/access", tags=["access"])
+
+
+# Configuración de CORS para permitir todas las solicitudes desde cualquier origen
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir solicitudes desde cualquier origen
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
+    allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
+)
 @app.on_event("startup")
 def on_startup():
     test_db_connection()
