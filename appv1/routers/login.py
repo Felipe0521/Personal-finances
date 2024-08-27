@@ -1,7 +1,7 @@
 from typing import List, Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from appv1.crud.users import create_user_sql, delete_user, get_all_users, get_all_users_paginated, get_user_by_email, get_user_by_id, get_user_by_role, update_user
-from appv1.schemas.user import PaginatedUsersResponse, UserCreate, UserResponse, UserUpdate
+from appv1.schemas.user import PaginatedUsersResponse, ResponseLoggin, UserCreate, UserLoggin, UserResponse, UserUpdate
 
 from core.security import get_hashed_password, verify_password, create_access_token, verify_token
 from db.database import get_db
@@ -36,7 +36,7 @@ def authenticate_user(username: str, password: str, db: Session):
     return user
 
 
-@router.post("/token")
+@router.post("/token", response_model=ResponseLoggin)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db)
@@ -49,9 +49,18 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.user_id, "rol":user.user_role}
+        data={"sub": user.user_id, "rol": user.user_role}
     )
-    return {"access_token":access_token, "token_type":"bearer"}
+    return ResponseLoggin(
+        user=UserLoggin(
+            user_id=user.user_id,
+            full_name=user.full_name,
+            mail=user.mail,
+            user_role=user.user_role
+        ),
+        access_token=access_token 
+    )
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/access/token")
 
