@@ -1,5 +1,6 @@
 from typing import List, Annotated
 from fastapi import APIRouter, Depends, HTTPException
+from appv1.crud.permissions import get_all_permissions
 from appv1.crud.users import create_user_sql, delete_user, get_all_users, get_all_users_paginated, get_user_by_email, get_user_by_id, get_user_by_role, update_user
 from appv1.schemas.user import PaginatedUsersResponse, ResponseLoggin, UserCreate, UserLoggin, UserResponse, UserUpdate
 
@@ -51,6 +52,7 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.user_id, "rol": user.user_role}
     )
+    permisos = get_all_permissions(db,user.user_role)
     return ResponseLoggin(
         user=UserLoggin(
             user_id=user.user_id,
@@ -58,6 +60,7 @@ async def login_for_access_token(
             mail=user.mail,
             user_role=user.user_role
         ),
+        permissions=permisos,
         access_token=access_token 
     )
 
@@ -77,3 +80,14 @@ async def get_current_user(
     if not user_db.user_status:
         raise HTTPException(status_code=403, detail="User Deleted, Not authorized")
     return user_db
+
+@router.post("/register")
+async def register_user(
+    user: UserCreate,
+    db: Session = Depends(get_db)
+):
+    user.user_role = 'Cliente'
+    respuesta = create_user_sql(db, user)
+    if respuesta:
+        return {"mensaje":"usuario registrado con éxito"}
+    

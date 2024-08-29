@@ -69,3 +69,4 @@ def delete_user_by_id(user_id: str, db: Session = Depends(get_db)):
      if result:
         return {"mensaje": "Usuario eliminado con éxito"}
      
+     #mlsn.7d04371673c03d6fca80a983e7408b5b246d1c83c2b2f008191cb9b5fada9794
