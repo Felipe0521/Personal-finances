@@ -53,7 +53,7 @@
                                         <router-link class="small" to="/forgot-password">Recordar Contraseña ?</router-link>
                                     </div>
                                     <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
+                                        <router-link class="small", to="/user-register" >Registrar usuario</router-link>
                                     </div>
                                 </div>
                             </div>

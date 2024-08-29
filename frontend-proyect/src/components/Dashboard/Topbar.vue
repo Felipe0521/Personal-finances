@@ -165,8 +165,9 @@
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                    <img class="img-profile rounded-circle" src="">
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user?.full_name }}</span>
+                    <i class="bi bi-person-circle"></i>
+                    <button class="btn btn-dark" @click="logout"><i class="bi bi-power"></i></button>
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -195,3 +196,28 @@
     </nav>
     <!-- End of Topbar -->
 </template>
+<script>
+import { useAuthStore } from '@/store'; // Importa el store de autenticación
+
+export default {
+    setup() {
+        const authStore = useAuthStore(); // Obtén la instancia del store
+
+        // Variables para acceder a los datos del store
+        const user = authStore.user;
+        const permissions = authStore.permissions;
+        
+
+        // Acción para cerrar sesión
+        const logout = () => {
+            authStore.logout();
+        };
+
+        return {
+            user,
+            permissions,
+            logout
+        };
+    }
+};
+</script>
